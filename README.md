@@ -41,6 +41,7 @@ A live demo is running on [HuggingFace](https://huggingface.co/spaces/lvxvvv/aud
 ### System Packages
 
 - `ffmpeg`
+- `sox`
 - `mp3gain`
 - `python3`
 - `python3-pip`
@@ -93,7 +94,7 @@ podman run -it -p 7860:7860 audiotame:gradio
 
 #### Using Alias
 
-Yu can you use an alias in your `~/.bashrc`. Copy and Paste it:
+u can you use an alias in your `~/.bashrc`:
 
 ```
 alias audiotame='podman run --rm --volume "$(pwd)":/tmp audiotame:cli'
