@@ -32,7 +32,7 @@ jeepney==0.8.0
 Jinja2==3.1.5
 keyring==25.6.0
 markdown-it-py==3.0.0
-MarkupSafe==2.1.5
+MarkupSafe==3.0.2
 mdurl==0.1.2
 more-itertools==10.6.0
 nh3==0.2.20
