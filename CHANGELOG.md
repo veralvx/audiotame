@@ -1,3 +1,11 @@
+## What's Changed in 0.1.2
+* chore(release): bump to 0.1.2
+* fix: arnndn invalid output variable
+* chore: added changelog url in pyproject.toml
+* docs: changelog
+
+**Full Changelog**: https://github.com///compare/0.1.1...0.1.2
+
 ## What's Changed in 0.1.1
 * chore(release): bump to 0.1.1
 * Fix: nosilence -y not recognized
