@@ -329,7 +329,7 @@ if [[ $REGULAR_DENOISE -eq 1 ]]; then
 
 
     # it seems this has no effect. Review later
-    ffmpeg -i $audio_dir/.$base_name_no_ext-afftdn.$input_extension -af silenceremove=0:1:${SILENCE_FLOOR}dB "$audio_dir/.$base_name_no_ext-nosilence.$input_extension" -y
+    ffmpeg -i $audio_dir/.$base_name_no_ext-afftdn.$input_extension -af silenceremove=0:1:${SILENCE_FLOOR}dB "$audio_dir/.$base_name_no_ext-nosilence.$input_extension"
 
 
     if [[ $DEBUG -eq 1 ]]; then
@@ -358,7 +358,7 @@ fi
 # May re-sample to 48khz
 echo "ARNNDN variable is $ARNNDN"
 if [[ $ARNNDN -eq 1 ]]; then
-    ffmpeg -i $kitten_noise -af arnndn=m=$audiotame_script_dir/arnndn-models/$ARNNDN_MODEL "$audio_dir/.$base_name_no_ext-arnndn.$input_extension"
+    ffmpeg -i $kitten_noise -af arnndn=m=$audiotame_script_dir/arnndn-models/$ARNNDN_MODEL "$audio_dir/.$base_name_no_ext-arnndn.$input_exytension"
 fi
 
 
