@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -15,7 +15,8 @@ audiotame = "audiotame.main:main"
 
 [project]
 name = "audiotame"
-dynamic = ["version"]
+version = "0.1.0"
+#dynamic = ["version"]
 authors = [
   { name="lvxvvv" },
 ]
