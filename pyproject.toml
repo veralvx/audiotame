@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"audiotame" = ["audiotame.sh", "arnndn-models/*"]
+
+
+[project.scripts]
+audiotame = "audiotame.main:main"
+
+
+[project]
+name = "audiotame"
+dynamic = ["version"]
+authors = [
+  { name="lvxvvv" },
+]
+maintainers = [
+  {name = "lvxvvv"}
+]
+description = "Command-line tool that normalizes audio and reduces noise."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python",
+    "Programming Language :: Unix Shell",
+    "Environment :: Console",
+    "Operating System :: Unix",
+    "Operating System :: POSIX :: Linux",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Multimedia :: Sound/Audio :: Conversion",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English"
+]
+
+
+keywords = ["audio", "normalization", "noise reduction", "normalize audio", "acx", "audio conversion"]
+
+dependencies = [
+  "ffmpeg-normalize>=1.31.0,<2.0"
+]
+
+
+license = { file = "LICEN[CS]E*" }
+
+[project.urls]
+Homepage = "https://github.com/lvxvvv/audiotame"
+Repository = "https://github.com/lvxvvv/audiotame.git"
+Issues = "https://github.com/lvxvvv/audiotame/issues"
+Mastodon = "https://mastodon.social/@lvxvvv"
+Twitter = "https://x.com/LVXVVV"
+
+
+[project.optional-dependencies]
+gui = ["gradio>=5.0,<6.0; python_version >= '3.10'"]

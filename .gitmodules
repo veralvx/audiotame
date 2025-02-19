@@ -1,0 +1,3 @@
+[submodule "src/audiotame/arnndn-models"]
+	path = src/audiotame/arnndn-models
+	url = https://github.com/richardpl/arnndn-models.git

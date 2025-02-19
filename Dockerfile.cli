@@ -1,0 +1,14 @@
+FROM python:3.13-alpine
+
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update --no-cache && apk upgrade --no-cache
+RUN apk add --no-cache bash ffmpeg sox mp3gain
+
+COPY . /opt/audiotame
+
+RUN cd /opt/audiotame && python3 -m pip install --no-cache-dir --upgrade pip && python3 -m pip install --no-cache-dir .
+RUN cd /opt && rm -rf audiotame
+
+ENTRYPOINT ["audiotame"]
+
+WORKDIR /tmp

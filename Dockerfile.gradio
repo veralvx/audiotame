@@ -1,0 +1,21 @@
+# Build pip package
+
+FROM python:3.13-alpine as base
+
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update --no-cache && apk upgrade --no-cache
+RUN apk add --no-cache bash ffmpeg sox mp3gain
+
+RUN python3 -m pip install --no-cache-dir --upgrade pip 
+RUN python3 -m pip install --no-cache-dir gradio 
+RUN python3 -m pip install --no-cache-dir build twine
+
+COPY . audiotame
+RUN cd /audiotame && python3 -m pip install --no-cache-dir . 
+
+EXPOSE 7860
+ENV GRADIO_SERVER_NAME="0.0.0.0"
+ENTRYPOINT ["audiotame"]
+CMD ["--gradio"]
+
+WORKDIR /tmp
