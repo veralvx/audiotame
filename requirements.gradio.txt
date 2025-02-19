@@ -43,7 +43,7 @@ pandas==2.2.3
 pillow==11.1.0
 pycparser==2.22
 pydantic==2.10.6
-pydantic_core==2.27.2
+pydantic_core==2.29.0
 pydub==0.25.1
 Pygments==2.19.1
 pyproject_hooks==1.2.0
