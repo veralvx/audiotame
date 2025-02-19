@@ -231,27 +231,27 @@ SILENCE_FLOOR="-60"
 DEBUG=0
 ```
 
-- NORM_TYPE: Normalization type: `ebu` ou `rms`;
+- `NORM_TYPE`: Normalization type: `ebu` ou `rms`;
 
-- LOUD_TARGET: Normalization loudness target;
+- `LOUD_TARGET`: Normalization loudness target;
 
-- ARNNDN: whether to use RNN (ffmpeg's arnndn filter). Must be `0` or `1`;
+- `ARNNDN`: whether to use RNN (ffmpeg's arnndn filter). Must be `0` or `1`;
 
-- SOX_DENOISE: whether to denoise (except for arnndn, which is a separete category) the audio or not with sox. Must be `0` or `1`. If `0`;
+- `SOX_DENOISE`: whether to denoise (except for arnndn, which is a separete category) the audio or not with sox. Must be `0` or `1`. If `0`;
 
-- SOX_FACTOR: the factor that sox will use to denoise your audio. 0 is none, 1 is maximum. best values are regarded to be in 0.2-0.3 range;
+- `SOX_FACTOR`: the factor that sox will use to denoise your audio. 0 is none, 1 is maximum. best values are regarded to be in 0.2-0.3 range;
 
-- SOX_NOISE_THRESHOLD: the dB value that sets a threshold below which sound is considered noise by sox;
+- `SOX_NOISE_THRESHOLD`: the dB value that sets a threshold below which sound is considered noise by sox;
 
-- SOX_NOISE_MIN_DURATION: the minimum duration that a sound that is below the threshold to be considered noise by sox. The default is 0.5s;
+- `SOX_NOISE_MIN_DURATION`: the minimum duration that a sound that is below the threshold to be considered noise by sox. The default is 0.5s;
 
-- REGULAR_DENOISE: whether to denoise using ffmpeg's regular filter (lowers intensity of audio below the threshold);
+- `REGULAR_DENOISE`: whether to denoise using ffmpeg's regular filter (lowers intensity of audio below the threshold);
 
-- REGULAR_NOISE_THRESHOLD: he dB value that sets a threshold below which sound is considered noise by ffmpeg;
+- `REGULAR_NOISE_THRESHOLD`: he dB value that sets a threshold below which sound is considered noise by ffmpeg;
 
-- SILENCE_FLOOR: the dB value that sets a threshold below which sound is considered silence.
+- `SILENCE_FLOOR`: the dB value that sets a threshold below which sound is considered silence.
 
-- DEBUG: will print to the console stats of audio files generated at each step.
+- `DEBUG`: will print to the console stats of audio files generated at each step.
 
 `NORM_TYPE` and `LOUD_TARGET` are set in accordance to [ffmpeg-normalize](https://github.com/slhck/ffmpeg-normalize).
 
