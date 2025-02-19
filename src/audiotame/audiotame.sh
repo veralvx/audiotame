@@ -358,7 +358,7 @@ fi
 # May re-sample to 48khz
 echo "ARNNDN variable is $ARNNDN"
 if [[ $ARNNDN -eq 1 ]]; then
-    ffmpeg -i $kitten_noise -af arnndn=m=$audiotame_script_dir/arnndn-models/$ARNNDN_MODEL -y "$audio_dir/.$base_name_no_ext-arnndn.$input_extension"
+    ffmpeg -i $kitten_noise -af arnndn=m=$audiotame_script_dir/arnndn-models/$ARNNDN_MODEL "$audio_dir/.$base_name_no_ext-arnndn.$input_extension"
 fi
 
 
