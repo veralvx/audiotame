@@ -17,7 +17,7 @@ ffmpeg-progress-yield==0.11.3
 ffmpy==0.5.0
 filelock==3.17.0
 fsspec==2025.2.0
-gradio==5.16.0
+gradio==5.16.1
 gradio_client==1.7.0
 h11==0.14.0
 httpcore==1.0.7

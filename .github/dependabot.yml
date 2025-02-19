@@ -34,4 +34,3 @@ updates:
       python-packages:
         patterns:
           - "ffmpeg-normalize"
-          - "gradio"
