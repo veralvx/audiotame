@@ -1,3 +1,15 @@
+---
+title: Audiotame
+sdk: docker
+app_port: 7860
+pinned: true
+colorFrom: purple
+colorTo: red
+language: en
+license: "mit"
+tags: ["audio", "normalization", "noise reduction", "normalize audio", "acx", "audio conversion"]
+---
+
 # AudioTame
 
 A command-line tool that normalizes audio and reduces noise. This tool aims to effortless create an audio file that is high in quality. It targets an integrated loudness (LUFS, RMS) close to 20, by default. It uses [ffmpeg-normalize](https://github.com/slhck/ffmpeg-normalize) and additional ffmpeg filters to achieve the desired result, as well as SoX and mp3gain.
