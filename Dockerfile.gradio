@@ -1,6 +1,4 @@
-# Build pip package
-
-FROM python:3.13-alpine AS base
+FROM python:3.13-alpine
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk update --no-cache && apk upgrade --no-cache

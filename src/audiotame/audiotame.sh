@@ -187,6 +187,8 @@ if [[ $input_extension == "ogg" ]]; then
     codec_lib=libvorbis
 elif [[ $input_extension == "flac" ]]; then
     codec_lib=flac
+elif [[ $input_extension == "m4a" ]]; then
+    codec_lib=aac
 elif [[ $input_extension == "opus" ]] || [[ $input_extension == "opus" ]]; then
     codec_lib=libopus
 else

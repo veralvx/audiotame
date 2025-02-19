@@ -1,23 +1,17 @@
-# For Hugging Face:
+# For Hugging Face (it is the same as Dockerfile.gradio):
 
-FROM python:3.13
+FROM python:3.13-alpine
 
-RUN apt update && apt upgrade -y
-RUN apt install bash coreutils ffmpeg sox mp3gain -y
-RUN apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update --no-cache && apk upgrade --no-cache
+RUN apk add --no-cache bash ffmpeg sox mp3gain
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip 
 RUN python3 -m pip install --no-cache-dir audiotame[gui]
-RUN useradd -m -u 1000 user
-USER user
-# Set home to the user's home directory
-ENV HOME=/home/user \
-	PATH=/home/user/.local/bin:$PATH
-
-WORKDIR /app
 
 EXPOSE 7860
 ENV GRADIO_SERVER_NAME="0.0.0.0"
-CMD ["audiotame", "--gradio"]
+ENTRYPOINT ["audiotame"]
+CMD ["--gradio"]
 
-    
+WORKDIR /tmp

@@ -18,6 +18,8 @@ Audiotame has an [ACX Check](#acx-check). Notice, however, that while meeting th
 
 Also, it uses Bash, so it is not expected to work on Windows systems, unless used under WSL or containers.
 
+A live demo is running on [HuggingFace](https://huggingface.co/spaces/lvxvvv/audiotame)
+
 **Contents**
 
 - [Installation](#installation)
@@ -298,3 +300,6 @@ audiotame --gradio
 ```
 
 Or, you can pull the [gradio image](#dockerpodman-image)
+
+
+![](assets/demo.png)
