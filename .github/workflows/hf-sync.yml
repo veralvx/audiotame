@@ -16,4 +16,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://${{ github.repository_owner }}:$HF_TOKEN@huggingface.co/spaces/${{ github.repository_owner }}/${{ github.event.repository.name }} main
+        run: git push --force https://${{ github.repository_owner }}:$HF_TOKEN@huggingface.co/spaces/${{ github.repository_owner }}/${{ github.event.repository.name }} main
