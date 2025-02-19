@@ -65,7 +65,7 @@ Repository = "https://github.com/lvxvvv/audiotame.git"
 Issues = "https://github.com/lvxvvv/audiotame/issues"
 Mastodon = "https://mastodon.social/@lvxvvv"
 Twitter = "https://x.com/LVXVVV"
-
+Changelog = "https://github.com/lvxvvv/audiotame/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 gui = ["gradio>=5.0,<6.0; python_version >= '3.10'"]
