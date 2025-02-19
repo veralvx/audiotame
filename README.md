@@ -67,9 +67,19 @@ podman pull ghcr.io/lvxvvv/audiotame:cli
 podman pull ghcr.io/lvxvvv/audiotame:gradio
 ```
 
+Then, you can run:
+
+```
+podman run --rm -it --volume "$(pwd)":/tmp audiotame:cli
+```
+
+```
+podman run -it -p 7860:7860 audiotame:gradio
+```
+
 #### Using Alias
 
-Then, you can you use an alias in your `~/.bashrc`. Copy and Paste it:
+Yu can you use an alias in your `~/.bashrc`. Copy and Paste it:
 
 ```
 alias audiotame='podman run --rm --volume "$(pwd)":/tmp audiotame:cli'
