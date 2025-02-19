@@ -30,6 +30,8 @@ updates:
       interval: "weekly"
       day: "sunday"
       time: "12:00"
+    allow:
+      - dependency-name: ffmpeg-normalize
     groups:
       python-packages:
         patterns:
