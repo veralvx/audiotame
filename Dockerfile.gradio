@@ -7,11 +7,7 @@ RUN apk update --no-cache && apk upgrade --no-cache
 RUN apk add --no-cache bash ffmpeg sox mp3gain
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip 
-RUN python3 -m pip install --no-cache-dir gradio 
-RUN python3 -m pip install --no-cache-dir build twine
-
-COPY . audiotame
-RUN cd /audiotame && python3 -m pip install --no-cache-dir . 
+RUN python3 -m pip install --no-cache-dir audiotame[gui]
 
 EXPOSE 7860
 ENV GRADIO_SERVER_NAME="0.0.0.0"

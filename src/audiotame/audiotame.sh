@@ -377,7 +377,7 @@ fi
 if [[ $input_extension == "mp3" ]]; then
     if command -v mp3gain >/dev/null 2>&1; then
         cp "$kitten_prenorm" $audio_dir/.$base_name_no_ext-normalized.$input_extension
-        mp3gain -r -c $audio_dir/.$base_name_no_ext-normalized.$input_extension -y
+        mp3gain -r -c $audio_dir/.$base_name_no_ext-normalized.$input_extension
     else
         echo "mp3gain is not installed. Skipping step"
     fi
