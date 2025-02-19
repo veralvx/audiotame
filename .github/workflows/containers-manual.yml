@@ -1,0 +1,47 @@
+name: Push Latest Docker Image (Manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push-latest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - dockerfile: Dockerfile.cli    
+            suffix: cli
+          - dockerfile: Dockerfile.gradio   
+            suffix: gradio
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image tagged as "latest"
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && format('{0}-latest', matrix.suffix) || 'latest' }}
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && format('{0}-latest', matrix.suffix) || 'latest' }}
