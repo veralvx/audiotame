@@ -1,4 +1,4 @@
-audiotame==0.1.7
+audiotame==0.1.8
 colorlog==6.9.0
 ffmpeg-normalize==1.31.1
 ffmpeg-progress-yield==0.11.3
