@@ -9,9 +9,10 @@ def main():
 
     if " " in input_file:
         new_file = input_file.replace(" ", "")
+        if os.path.exists(new_file):
+            os.remove(new_file)
         shutil.copyfile(input_file, new_file)
         sys.argv[1] = new_file
-        print(f"Using file: {sys.argv[1]})
 
     script = os.path.join(os.path.dirname(__file__), "audiotame.sh")
 

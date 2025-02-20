@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import time
 
 try:
     import gradio as gr
@@ -41,6 +42,7 @@ def tame(audio):
     name, ext = os.path.splitext(basename)
     file_output = f"{name}-tamed{ext}"
     out_file = f"{abs_dir_name}/{file_output}"
+    out_file = remove_whitespace(out_file)
 
     input_stats = stats(audio)
 
@@ -81,8 +83,20 @@ def convert(input, format):
     name, ext = os.path.splitext(basename)
     file_output = f"{name}.{format}"
     out_file = f"{abs_dir_name}/{file_output}"
+    out_file = remove_whitespace(out_file)
 
     return out_file
+
+
+def remove_whitespace(input):
+    
+    str_input = str(input)
+    if " " in str_input:
+        out = str_input.replace(" ", "")
+    else:
+        out = input
+    
+    return out
 
 
 with gr.Blocks() as tameblock:
@@ -90,12 +104,18 @@ with gr.Blocks() as tameblock:
     with gr.Row(equal_height=True):
         audiofile = gr.Audio(sources=["upload"], type="filepath", label="Input Audio")
         tamed_audiofile=gr.Audio(label="Tamed Audio", show_download_button=True)
-    
+
     with gr.Row(equal_height=True, visible=False) as statsrow:
         input_stats_out=gr.Code(label="Input Stats", lines=5, max_lines=6)
         tamed_stats_out=gr.Code(label="Tamed Stats", lines=5, max_lines=6)
+    
+    def update_dummy():
+        return str(time.time())
 
-    tamebtn = gr.Button("Tame", variant="primary")
+    dummy = gr.Textbox(value=str(time.time()), visible=False)
+    
+
+    tamebtn = gr.Button("Tame", variant="primary", size="lg")
 
     def showstats():
         return { statsrow: gr.Column(visible=True) }
@@ -111,6 +131,7 @@ with gr.Blocks() as tameblock:
         fn=clear_tame,
         inputs=None,
         outputs=[input_stats_out, tamed_audiofile, tamed_stats_out]
+    ).then(fn=update_dummy, inputs=None, outputs=dummy
     ).then(hidestats, inputs=None, outputs=statsrow
     ).then(tame, inputs=audiofile, outputs=[input_stats_out, tamed_audiofile, tamed_stats_out]
     ).then(showstats, inputs=None, outputs=statsrow)
@@ -251,4 +272,9 @@ if gradio_server != "0.0.0.0":
 
 
 demo.queue(default_concurrency_limit=2)
-demo.launch(share=False, server_name=gradio_server, pwa=True)
+
+try:
+    demo.launch(share=False, server_name=gradio_server, pwa=True)
+except KeyboardInterrupt:
+    print("Shutting down...")
+    sys.exit(0)
