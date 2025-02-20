@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.7 - 2025-02-20
+
+[5bf0373](5bf0373d53a386e493172bdb098779063c3884ef)...[a2eb41c](a2eb41c7d8275be7a34c4ce334321efbc663ff8a)
+
+### Bug Fixes
+
+- Arnndn regression, pypi workflow incomplete ([a2eb41c](a2eb41c7d8275be7a34c4ce334321efbc663ff8a))
+
+### Documentation
+
+- Changelog for 0.1.5 release ([2f8b394](2f8b394268ba2d27a1d21a0b5f94d0366ff04853))
+
 ## 0.1.5 - 2025-02-20
 
 [ecb3a11](ecb3a11b5fdfa7fecae5c8f757c4f85c12d73ff8)...[5bf0373](5bf0373d53a386e493172bdb098779063c3884ef)
