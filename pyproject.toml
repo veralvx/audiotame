@@ -15,7 +15,7 @@ audiotame = "audiotame.main:main"
 
 [project]
 name = "audiotame"
-version = "0.1.2"
+version = "0.1.4"
 #dynamic = ["version"]
 authors = [
   { name="lvxvvv" },
