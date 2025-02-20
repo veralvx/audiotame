@@ -319,7 +319,7 @@ fi
 
 if [[ $REGULAR_DENOISE -eq 1 ]]; then
     # everything below 50db gets reduced in 10db
-    ffmpeg -i $kitten_sox -af "afftdn=nr=10:nf=$REGULAR_NOISE_THRESHOLD" $audio_dir/.$base_name_no_ext-afftdn.$input_extension
+    ffmpeg -i $kitten_sox -af "afftdn=nr=10:nf=$REGULAR_NOISE_THRESHOLD" $audio_dir/.$base_name_no_ext-afftdn.$input_extension -y
 
 
     if [[ $DEBUG -eq 1 ]]; then
@@ -329,7 +329,7 @@ if [[ $REGULAR_DENOISE -eq 1 ]]; then
 
 
     # it seems this has no effect. Review later
-    ffmpeg -i $audio_dir/.$base_name_no_ext-afftdn.$input_extension -af silenceremove=0:1:${SILENCE_FLOOR}dB "$audio_dir/.$base_name_no_ext-nosilence.$input_extension"
+    ffmpeg -i $audio_dir/.$base_name_no_ext-afftdn.$input_extension -af silenceremove=0:1:${SILENCE_FLOOR}dB "$audio_dir/.$base_name_no_ext-nosilence.$input_extension" -y
 
 
     if [[ $DEBUG -eq 1 ]]; then
