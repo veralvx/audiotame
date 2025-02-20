@@ -94,24 +94,23 @@ podman run -it -p 7860:7860 audiotame:gradio
 
 #### Using Alias
 
-u can you use an alias in your `~/.bashrc`:
+Use an alias in your `~/.bashrc`:
 
 ```
-alias audiotame='podman run --rm --volume "$(pwd)":/tmp audiotame:cli'
-```
-
-```
-alias audiotame_gr='podman run --rm -p 7860:7860 audiotame:gradio'
-```
-
-Or use `echo`:
-
-```
-echo 'alias audiotame='"'"'podman run --rm --volume "$(pwd)":/tmp audiotame'"'" >> ~/.bashrc
+alias audiotame='podman run --rm --volume $(pwd):/tmp audiotame:cli'
 ```
 
 ```
-echo 'alias audiotame_gr='"'"'podman run -it --rm -p 7860:7860 audiotame:gradio'"'" >> ~/.bashrc
+alias audiotame:gradio='podman run -it --rm -p 7860:7860 audiotame:gradio'
+```
+
+
+```
+echo "alias audiotame='podman run --rm --volume \$(pwd):/tmp audiotame:cli'" >> ~/.bashrc
+```
+
+```
+echo "alias audiotame:gradio='podman run -it --rm -p 7860:7860 audiotame:gradio'" >> ~/.bashrc
 ```
 
 Then,
