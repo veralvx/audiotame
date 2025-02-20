@@ -95,7 +95,7 @@ with gr.Blocks() as tameblock:
         input_stats_out=gr.Code(label="Input Stats", lines=5, max_lines=6)
         tamed_stats_out=gr.Code(label="Tamed Stats", lines=5, max_lines=6)
 
-    tamebtn = gr.Button("Tame")
+    tamebtn = gr.Button("Tame", variant="primary")
 
     def showstats():
         return { statsrow: gr.Column(visible=True) }
@@ -205,7 +205,7 @@ with gr.Blocks() as convertblock:
 
     format = gr.Radio(["wav", "flac", "mp3", "m4b", "aac", "ogg", "wma", "aiff", "webm"], label="Convert to:")
 
-    convert_btn = gr.Button("Convert")
+    convert_btn = gr.Button("Convert", variant="primary")
     convert_btn.click(fn=convert, inputs=[audiofile, format], outputs=converted_audio)
 
     def clear_convert():
@@ -226,9 +226,9 @@ with gr.Blocks() as statsblock:
 
     with gr.Row(equal_height=True):
 
-        statsbtn = gr.Button("Stats")
+        statsbtn = gr.Button("Stats", variant="primary")
         statsbtn.click(stats, audiofile, statsout)
-        acxbtn = gr.Button("ACX")
+        acxbtn = gr.Button("ACX", variant="primary")
         acxbtn.click(acx, audiofile, acxout)
 
 

@@ -303,7 +303,7 @@ if [[ $SOX_DENOISE -eq 1 ]] && [[ $input_extension != "opus" ]]; then
         echo "No noise segments detected."
     fi
 else
-    echo "$SOX_DENOISE is $SOX_DENOISE"
+    echo "SOX_DENOISE is $SOX_DENOISE"
     echo "input_extension is $input_extension"
     echo "Not applying sox denoising"
 fi
@@ -345,7 +345,6 @@ fi
 
 
 
-
 if [[ -f "$audio_dir/.$base_name_no_ext-nosilence.$input_extension" ]]; then
     kitten_noise="$audio_dir/.$base_name_no_ext-nosilence.$input_extension"
     echo "$kitten_noise created"
@@ -358,7 +357,7 @@ fi
 # May re-sample to 48khz
 echo "ARNNDN variable is $ARNNDN"
 if [[ $ARNNDN -eq 1 ]]; then
-    ffmpeg -i $kitten_noise -af arnndn=m=$audiotame_script_dir/arnndn-models/$ARNNDN_MODEL "$audio_dir/.$base_name_no_ext-arnndn.$input_extension"
+    ffmpeg -i $kitten_noise -af arnndn=m=$audiotame_script_dir/arnndn-models/$ARNNDN_MODEL "$audio_dir/.$base_name_no_ext-arnndn.$input_extension" -y
 fi
 
 
@@ -377,12 +376,8 @@ fi
 
 
 if [[ $input_extension == "mp3" ]]; then
-    if command -v mp3gain >/dev/null 2>&1; then
-        cp "$kitten_prenorm" $audio_dir/.$base_name_no_ext-normalized.$input_extension
-        mp3gain -r -c $audio_dir/.$base_name_no_ext-normalized.$input_extension
-    else
-        echo "mp3gain is not installed. Skipping step"
-    fi
+    cp "$kitten_prenorm" $audio_dir/.$base_name_no_ext-normalized.$input_extension
+    mp3gain -r -c $audio_dir/.$base_name_no_ext-normalized.$input_extension
 else
     # ffmpeg-normalize sometimes re-samples to 192khz
     echo "Loudness target: $LOUD_TARGET"
