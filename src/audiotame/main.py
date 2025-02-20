@@ -1,9 +1,18 @@
 import os
 import subprocess
 import sys
-
+import shutil
 
 def main():
+
+    input_file = sys.argv[1]
+
+    if " " in input_file:
+        new_file = input_file.replace(" ", "")
+        shutil.copyfile(input_file, new_file)
+        sys.argv[1] = new_file
+        print(f"Using file: {sys.argv[1]})
+
     script = os.path.join(os.path.dirname(__file__), "audiotame.sh")
 
     if not os.path.exists(script):
