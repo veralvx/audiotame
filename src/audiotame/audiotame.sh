@@ -8,7 +8,7 @@ if [ -z "$1" ];  then
 	exit
 elif [[ $1 == "help" ]] || [[ $1 == "--help" ]] || [[ $1 == "-h" ]]; then
     echo "Usage:"
-    echo "audiotame path_to_file [optional|pass|float|stats|acx|sr|br|convert] [optional|pass|float|(int)k|file_extension]"
+    echo "audiotame path_to_file [optional|pass|float|stats|acx|sr|br|convert|extract] [optional|pass|float|(int)k|file_extension]"
     echo "path_to_file is mandatory. Other parameters are optional"
 elif [[ "$1" == "--gradio" ]]; then
     python3 $audiotame_script_dir/app.py
@@ -126,6 +126,19 @@ elif [[ "$2" == "convert" ]]; then
     ffmpeg -i $kitten_audio $ffconvargs $audio_dir/$base_name_no_ext.$3 -y
 
     exit
+
+elif [[ "$2" == "extract" ]]; then
+
+    codec=$(ffprobe -v error -select_streams a:0 \
+    -show_entries stream=codec_name \
+    -of default=noprint_wrappers=1:nokey=1 "$kitten_audio")
+
+    ffmpeg -i "$kitten_audio" -vn -c:a copy $audio_dir/$base_name_no_ext.$codec -y
+
+    echo "Extracted audio, saved as $audio_dir/$base_name_no_ext.$codec"
+
+    exit
+
 fi
 
 

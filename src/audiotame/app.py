@@ -33,25 +33,28 @@ def set_env(
     print("env has been set")
 
 
-
-
-
-def define_output(file, lossy_formats=lossy_formats):
+def define_output(file, lossy_formats=lossy_formats, follow_env=True, video_extract=False, codec=False):
     abs_dir_name = os.path.dirname(file)
     basename = os.path.basename(file)
     name, ext = os.path.splitext(basename)
     ext_alone = ext.replace(".", "")
-    out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed{ext}")
+    
+    if video_extract:
+        out_file = remove_whitespace(f"{abs_dir_name}/{name}.{codec}")
+    else:
+        out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed{ext}")
 
-    convert_enabled = os.getenv("CONVERT_LOSSY_TO_WAV")
+        if follow_env:
 
-    if (ext_alone in lossy_formats) and int(convert_enabled):
-        # this means conversion failed
-        if os.path.exists(out_file):
-            return out_file
-        # conversion ocurred:
-        else:
-            out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed.wav")
+            convert_enabled = os.getenv("CONVERT_LOSSY_TO_WAV")
+
+            if (ext_alone in lossy_formats) and int(convert_enabled):
+                # this means conversion failed
+                if os.path.exists(out_file):
+                    return out_file
+                # conversion ocurred:
+                else:
+                    out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed.wav")
         
     return out_file
 
@@ -68,7 +71,7 @@ def tame(audio):
         set_env()
 
     out_file = define_output(audio)
-    
+
     if os.path.exists(out_file):
         os.remove(out_file)
     
@@ -96,6 +99,7 @@ def stats(input):
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout
 
+
 def convert(input, format):
 
     if input == None:
@@ -103,13 +107,35 @@ def convert(input, format):
 
     command = ["audiotame", str(input), "convert", format]
     result = subprocess.run(command, check=True)
+    print(result.stderr)
+    print(result.stdout)
     
-    abs_dir_name = os.path.dirname(input)
-    basename = os.path.basename(input)
-    name, ext = os.path.splitext(basename)
-    file_output = f"{name}.{format}"
-    out_file = f"{abs_dir_name}/{file_output}"
-    out_file = remove_whitespace(out_file)
+    out_file = define_output(input, follow_env=False)
+
+    return out_file
+
+
+def extract(input):
+
+    if input == None:
+        return None
+
+    command = ["audiotame", str(input), "extract"]
+    result = subprocess.run(command, check=True)
+
+    command = [
+    "ffprobe",
+    "-v", "error",
+    "-select_streams", "a:0",
+    "-show_entries", "stream=codec_name",
+    "-of", "default=noprint_wrappers=1:nokey=1",
+    input
+    ]
+
+    codec = subprocess.check_output(command).decode("utf-8").strip()
+    print(f"Audio codec: {codec}")
+
+    out_file = define_output(input, follow_env=False, video_extract=True, codec=codec)
 
     return out_file
 
@@ -163,7 +189,6 @@ with gr.Blocks() as tameblock:
     ).then(showstats, inputs=None, outputs=statsrow)
 
     #tamebtn.click(fn=tame, inputs=audiofile, outputs=[input_stats_out, tamed_audiofile, tamed_stats_out])
-
 
 
 with gr.Blocks() as envars:
@@ -265,7 +290,16 @@ with gr.Blocks() as convertblock:
     gr.on(
         triggers=[convert_btn.click],
         fn=convert, inputs=[audiofile, format], outputs=converted_audio)
-    
+
+
+with gr.Blocks() as extractblock:
+    with gr.Row():
+        videofile = gr.Video(sources="upload", label="Input Video", scale=1)
+        extracted_vid = gr.Audio(label="Extracted Audio", show_download_button=True, scale=2)
+
+    extract_btn = gr.Button("Extract Audio", variant="primary")
+    extract_btn.click(fn=extract, inputs=videofile, outputs=extracted_vid)
+
 
 with gr.Blocks() as statsblock:
             
@@ -289,11 +323,10 @@ with gr.Blocks() as main:
 
 
 demo = gr.TabbedInterface(
-    interface_list=[main, convertblock, statsblock],
-    tab_names=["Tame", "Convert", "Stats/ACX"],
+    interface_list=[main, convertblock, extractblock, statsblock],
+    tab_names=["Tame", "Convert", "Extract", "Stats/ACX"],
     title="AudioTame",
     theme=gr.themes.Default(text_size="sm", spacing_size="sm", font=["ui-system", "Arial", "sans-serif", "monospace"])
-
 )
 
 gradio_server = os.getenv("GRADIO_SERVER_NAME")

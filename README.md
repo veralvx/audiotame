@@ -132,7 +132,7 @@ audiotame audio.wav
 #### Tame Audio
 
 ```
-audiotame path_to_file [optional|pass|float|stats|acx|sr|br|convert] [optional|pass|float|(int)k|file_extension]
+audiotame path_to_file [optional|pass|float|stats|acx|sr|br|convert|extract] [optional|pass|float|(int)k|file_extension]
 ```
 
 `path_to_file` is mandatory. Other parameters are optional.
@@ -190,6 +190,20 @@ Example:
 audiotame audio.wav convert mp3
 ```
 
+##### Extract Audio
+
+```
+audiotame path_to_file convert extract
+```
+
+
+Example:
+
+
+```
+audiotame vid.mp4 extract
+```
+
 
 ##### Change Bit Rate
 
@@ -204,6 +218,7 @@ Change the sampling rate of `audio.wav` to 192kbps
 ```
 audiotame audio.wav br 192k
 ```
+
 
 
 ##### Stats
