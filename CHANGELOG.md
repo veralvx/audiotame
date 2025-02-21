@@ -1,4 +1,19 @@
+## 0.1.10 - 2025-02-21
+### Chore
+- Update docker workflow
+- Added manual docker workflow
+
+### Docs
+- Added backticks in variable
+
+### Fix
+- Docker workflow with right tags
+- Convert and extract resolve to right file path
+
 ## 0.1.9 - 2025-02-21
+### Chore
+- Bump to 0.1.9
+
 ### Docs
 - Yml typo
 
