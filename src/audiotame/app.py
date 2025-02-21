@@ -13,8 +13,10 @@ except:
     sys.exit(0)
 
 
+lossy_formats=["mp3", "aac", "m4a", "ogg", "opus", "wma", "webm"]
+
 def set_env(
-    DB_PEAK_BEFORE_ALL="-100", DB_PEAK_AFTER_NORM="-100",NORM_TYPE="ebu", LOUD_TARGET="-21", ARNNDN="0", ARNNDN_MODEL="cb.rnnn", 
+    CONVERT_LOSSY_TO_WAV="1", DB_PEAK_BEFORE_ALL="-100", DB_PEAK_AFTER_NORM="-100",NORM_TYPE="ebu", LOUD_TARGET="-21", ARNNDN="0", ARNNDN_MODEL="cb.rnnn", 
     SOX_DENOISE="1", SOX_FACTOR="0.21", SOX_NOISE_THRESHOLD="-50", SOX_NOISE_MIN_DURATION="0.5", REGULAR_DENOISE=1, REGULAR_NOISE_THRESHOLD="-50", SILENCE_FLOOR="-60", DEBUG="0"):
 
     for key, value in locals().items():
@@ -31,18 +33,33 @@ def set_env(
     print("env has been set")
 
 
+
+
+
+def define_output(file, lossy_formats=lossy_formats):
+    abs_dir_name = os.path.dirname(file)
+    basename = os.path.basename(file)
+    name, ext = os.path.splitext(basename)
+    ext_alone = ext.replace(".", "")
+    out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed{ext}")
+
+    convert_enabled = os.getenv("CONVERT_LOSSY_TO_WAV")
+
+    if (ext_alone in lossy_formats) and int(convert_enabled):
+        # this means conversion failed
+        if os.path.exists(out_file):
+            return out_file
+        # conversion ocurred:
+        else:
+            out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed.wav")
+        
+    return out_file
+
+
 def tame(audio):
 
     if audio is None:
         return "No audio provided!"
-    
-
-    abs_dir_name = os.path.dirname(audio)
-    basename = os.path.basename(audio)
-    name, ext = os.path.splitext(basename)
-    file_output = f"{name}-tamed{ext}"
-    out_file = f"{abs_dir_name}/{file_output}"
-    out_file = remove_whitespace(out_file)
 
     input_stats = stats(audio)
 
@@ -50,12 +67,21 @@ def tame(audio):
         print("Environment not yet set. Running set_env function.")
         set_env()
 
+    out_file = define_output(audio)
+    
+    if os.path.exists(out_file):
+        os.remove(out_file)
+    
+    out_file = define_output(audio)
+
     command = ["audiotame", str(audio)]
     result = subprocess.run(command, capture_output=True, text=True)
     print(result.stderr)
     print(result.stdout)
+
     
     tamed_stats = stats(out_file)
+
     return input_stats, out_file, tamed_stats
 
 
@@ -141,6 +167,9 @@ with gr.Blocks() as tameblock:
 
 
 with gr.Blocks() as envars:
+
+    CONVERT_LOSSY_TO_WAV = gr.Checkbox(label="CONVERT_LOSSY_TO_WAV", value=1, info="Convert lossy formats to wav before applying filters.")
+
     with gr.Row():
         DB_PEAK_BEFORE_ALL = gr.Slider(value="-100", minimum=-100, maximum=10, step=1, label="dB Peak before all functions (-100 means this is disabled)")
         DB_PEAK_AFTER_NORM =  gr.Slider(value="-100", minimum=-100, maximum=10, step=1, label="dB Peak after normalization (-100 means this is disabled)")
@@ -211,7 +240,8 @@ with gr.Blocks() as envars:
     gr.on(
         fn=set_env,
         inputs=[
-            DB_PEAK_BEFORE_ALL, DB_PEAK_AFTER_NORM, NORM_TYPE, LOUD_TARGET, ARNNDN, ARNNDN_MODEL, 
+            CONVERT_LOSSY_TO_WAV, DB_PEAK_BEFORE_ALL, DB_PEAK_AFTER_NORM, 
+            NORM_TYPE, LOUD_TARGET, ARNNDN, ARNNDN_MODEL, 
             SOX_DENOISE, SOX_FACTOR, SOX_NOISE_THRESHOLD, SOX_NOISE_MIN_DURATION, 
             REGULAR_DENOISE, REGULAR_NOISE_THRESHOLD, SILENCE_FLOOR, DEBUG
         ],

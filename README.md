@@ -239,6 +239,7 @@ audiotame path_to_file acx
 This program uses some variables as default:
 
 ```
+CONVERT_LOSSY_TO_WAV=1
 DB_PEAK_BEFORE_ALL="-100"
 DB_PEAK_AFTER_NORM="-100"
 NORM_TYPE="ebu"
@@ -254,6 +255,8 @@ REGULAR_NOISE_THRESHOLD="-50"
 SILENCE_FLOOR="-60"
 DEBUG=0
 ```
+
+- CONVERT_LOSSY_TO_WAV: if the input format is a lossy format, the program will convert to `.wav`;
 
 - `NORM_TYPE`: Normalization type: `ebu` ou `rms`;
 

@@ -19,17 +19,18 @@ elif ! [[ -f "$1" ]]; then
 fi
 
 
-
 audio_dir=$(dirname $(realpath $1))
 kitten_audio=$(realpath $1) # may have its db level tweaked or not.
 base_name_input_file=$(basename $1)
 base_name_no_ext=${base_name_input_file%.*}
 input_extension="${1##*.}"
+input_extension=$(echo "$input_extension" | tr '[:upper:]' '[:lower:]')
 real_pwd=$(realpath .)
 
 
 if [[ $GRADIO_RUNNING -ne 1 ]]; then
 
+    CONVERT_LOSSY_TO_WAV=1
     DB_PEAK_BEFORE_ALL="-100"
     DB_PEAK_AFTER_NORM="-100"
     NORM_TYPE="ebu"
@@ -67,7 +68,6 @@ if [[ $GRADIO_RUNNING -ne 1 ]]; then
 fi
 
 
-
 stats(){
     LUFS=$(ffmpeg -i $1 -af ebur128=framelog=verbose -f null - 2>&1 | awk '/I:/{print $2}')
     RMS=$(ffmpeg -i $1 -af astats=metadata=1:reset=0:measure_perchannel=0 -f null - 2>&1 | grep "RMS level" | cut -d ":" -f 2)
@@ -92,38 +92,15 @@ Bit Rate: $bit_rate
 }
 
 
+if [[ "$2" == "acx" ]]; then
 
-if [[ "$2" == "sr" ]]; then
-
-    if [[ "$3" =~ [[:alpha:]] ]] || [[ "$3" == *.* ]]; then
-        echo "Example usage: audiotamer audio.wav sr 44100"
-        exit
-    fi
-
-    if [[ -f $audio_dir/$base_name_no_ext-$3hz.$input_extension ]]; then rm $audio_dir/$base_name_no_ext-$3hz.$input_extension; fi
-    ffmpeg -i "$1" -ar $3 $audio_dir/$base_name_no_ext-$3hz.$input_extension
-    exit
-
-elif [[ "$2" == "br" ]]; then
-
-    if [[ "$3" != *k* ]] || [[ "$3" == *.* ]]; then
-        echo "Example usage: audiotamer audio.wav br 192k"
-        exit
-    fi
-
-    if [[ -f $audio_dir/$base_name_no_ext-$3kbps.$input_extension ]]; then rm -f $audio_dir/$base_name_no_ext-$3kbps.$input_extension; fi
-    ffmpeg -i $1 -b:a $3 $audio_dir/$base_name_no_ext-$3bps.$input_extension
-    exit
-
-elif [[ "$2" == "acx" ]]; then
-
-    stats $1
+    stats $kitten_audio
     python3 $audiotame_script_dir/acx.py "$base_name_input_file" "$LUFS" "$RMS" "$PEAK" "$sampling_rate" "$bit_rate"
     exit
 
 elif [[ "$2" == "stats" ]]; then
 
-    stats $1
+    stats $kitten_audio
     echo_stats
     exit
 
@@ -146,10 +123,65 @@ elif [[ "$2" == "convert" ]]; then
 
     # wav, flac, m4a, aac, aiff, mp3, ogg, opus, , wma
         
-    ffmpeg -i $1 $ffconvargs $audio_dir/$base_name_no_ext.$3 -y
+    ffmpeg -i $kitten_audio $ffconvargs $audio_dir/$base_name_no_ext.$3 -y
 
-    exit 0
+    exit
+fi
 
+
+if [[ $CONVERT_LOSSY_TO_WAV -eq 1 ]]; then
+
+    lossy_formats=("mp3" "aac" "m4a" "ogg" "opus" "wma" "webm")
+    is_lossy=0
+
+    for fmt in "${lossy_formats[@]}"; do
+        if [[ "$input_extension" == "$fmt" ]]; then
+            is_lossy=1
+            echo "Detected lossy format ($input_extension)"
+            break
+        fi
+    done
+
+    if [[ "$is_lossy" -eq 1 ]]; then
+
+        echo "Converting to wav: $kitten_audio"
+        ffmpeg -i "$kitten_audio" "$audio_dir/.$base_name_no_ext-lossy2wav.wav" -y
+
+        if [[ -f "$audio_dir/.$base_name_no_ext-lossy2wav.wav" ]]; then
+            input_extension="wav"
+            kitten_audio="$audio_dir/.$base_name_no_ext-lossy2wav.wav"
+            echo "$kitten_audio created"
+        else
+            echo "Conversion Failed. Using $kitten_audio"
+        fi
+
+    else 
+        echo "The file format $input_extension is not recognized as lossy. No conversion performed."
+    fi
+fi
+
+
+if [[ "$2" == "sr" ]]; then
+
+    if [[ "$3" =~ [[:alpha:]] ]] || [[ "$3" == *.* ]]; then
+        echo "Example usage: audiotamer audio.wav sr 44100"
+        exit
+    fi
+
+    if [[ -f $audio_dir/$base_name_no_ext-$3hz.$input_extension ]]; then rm $audio_dir/$base_name_no_ext-$3hz.$input_extension; fi
+    ffmpeg -i "$kitten_audio" -ar $3 $audio_dir/$base_name_no_ext-$3hz.$input_extension
+    exit
+
+elif [[ "$2" == "br" ]]; then
+
+    if [[ "$3" != *k* ]] || [[ "$3" == *.* ]]; then
+        echo "Example usage: audiotamer audio.wav br 192k"
+        exit
+    fi
+
+    if [[ -f $audio_dir/$base_name_no_ext-$3kbps.$input_extension ]]; then rm -f $audio_dir/$base_name_no_ext-$3kbps.$input_extension; fi
+    ffmpeg -i $kitten_audio -b:a $3 $audio_dir/$base_name_no_ext-$3bps.$input_extension
+    exit
 
 elif [ -z "$2" ]; then
 
@@ -166,6 +198,7 @@ fi
 
 
 echo """env vars:
+CONVERT_LOSSY_TO_WAV=$CONVERT_LOSSY_TO_WAV
 DB_PEAK_BEFORE_ALL=$DB_PEAK_BEFORE_ALL
 DB_PEAK_AFTER_NORM=$DB_PEAK_AFTER_NORM
 NORM_TYPE="$NORM_TYPE"
@@ -239,7 +272,7 @@ db_tweak(){
 }
 
 
-db_tweak $1
+db_tweak $kitten_audio
 
 
 if [[ $DEBUG -eq 1 ]]; then
@@ -253,10 +286,10 @@ fi
 if [[ $SOX_DENOISE -eq 1 ]]; then
 
     if [[ $input_extension == "webm" ]]; then
-        ffmpeg -i $kitten_audio $audio_dir/.$base_name_no_ext-webm2wav.wav
+        ffmpeg -i $kitten_audio $audio_dir/.$base_name_no_ext-webm2wav.wav -y
         kitten_audio="$audio_dir/.$base_name_no_ext-webm2wav.wav"
     elif [[ $input_extension == "opus" ]]; then
-        ffmpeg -i $kitten_audio $audio_dir/.$base_name_no_ext-opus2wav.wav
+        ffmpeg -i $kitten_audio $audio_dir/.$base_name_no_ext-opus2wav.wav -y
         kitten_audio=$audio_dir/.$base_name_no_ext-opus2wav.wav
     fi
 
