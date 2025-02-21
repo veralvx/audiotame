@@ -189,7 +189,7 @@ elif [[ $input_extension == "flac" ]]; then
     codec_lib=flac
 elif [[ $input_extension == "m4a" ]]; then
     codec_lib=aac
-elif [[ $input_extension == "opus" ]] || [[ $input_extension == "opus" ]]; then
+elif [[ $input_extension == "opus" ]] || [[ $input_extension == "webm" ]]; then
     codec_lib=libopus
 elif [[ $input_extension == "aac" ]]; then
     codec_lib=aac
@@ -250,7 +250,21 @@ fi
 # Noise is below 50db, for at least 0.5s
 
 
-if [[ $SOX_DENOISE -eq 1 ]] && [[ $input_extension != "opus" ]]; then
+if [[ $SOX_DENOISE -eq 1 ]]; then
+
+    if [[ $input_extension == "webm" ]]; then
+        ffmpeg -i $kitten_audio $audio_dir/.$base_name_no_ext-webm2wav.wav
+        kitten_audio="$audio_dir/.$base_name_no_ext-webm2wav.wav"
+    elif [[ $input_extension == "opus" ]]; then
+        ffmpeg -i $kitten_audio $audio_dir/.$base_name_no_ext-opus2wav.wav
+        kitten_audio=$audio_dir/.$base_name_no_ext-opus2wav.wav
+    fi
+
+    if [[ $input_extension == "webm" ]] || [[ $input_extension == "opus" ]]; then
+        input_extension=wav
+        codec_option=""
+        codec_lib=""
+    fi
 
 
     # Not Working:
