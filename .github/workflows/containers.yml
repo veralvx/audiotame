@@ -3,7 +3,7 @@ name: Push to Registries
 on:
   push:
     tags: ['*']
-    
+
   workflow_dispatch:
 
 
@@ -61,6 +61,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && format('{0}-{1}', matrix.suffix, steps.meta.outputs.version) || steps.meta.outputs.version }}
-            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && format('{0}-latest', matrix.suffix) || 'latest' }}
             ${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && format('{0}-{1}', matrix.suffix, steps.meta.outputs.version) || steps.meta.outputs.version }}
-            ${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && format('{0}-latest', matrix.suffix) || 'latest' }}
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && matrix.suffix }}
+            ${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ matrix.suffix != '' && matrix.suffix }}
