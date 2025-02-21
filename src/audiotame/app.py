@@ -33,18 +33,21 @@ def set_env(
     print("env has been set")
 
 
-def define_output(file, lossy_formats=lossy_formats, follow_env=True, video_extract=False, codec=False):
+def define_output(file, lossy_formats=lossy_formats, follow_env=True, convert_format=False, video_extract=False, codec=False):
     abs_dir_name = os.path.dirname(file)
     basename = os.path.basename(file)
     name, ext = os.path.splitext(basename)
     ext_alone = ext.replace(".", "")
     
-    if video_extract:
+    if video_extract: # video_extract function
         out_file = remove_whitespace(f"{abs_dir_name}/{name}.{codec}")
     else:
-        out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed{ext}")
+        if convert_format: # for convert fucntion
+            out_file = remove_whitespace(f"{abs_dir_name}/{name}.{convert_format}")
+        else: # regular tame function
+            out_file = remove_whitespace(f"{abs_dir_name}/{name}-tamed{ext}")
 
-        if follow_env:
+        if follow_env: # for tame function, if conversion from lossy to wav is enabled
 
             convert_enabled = os.getenv("CONVERT_LOSSY_TO_WAV")
 
@@ -110,12 +113,12 @@ def convert(input, format):
     print(result.stderr)
     print(result.stdout)
     
-    out_file = define_output(input, follow_env=False)
+    out_file = define_output(input, follow_env=False, convert_format=format)
 
     return out_file
 
 
-def extract(input):
+def extract(input, convert_extracted=False, convert_format=False):
 
     if input == None:
         return None
@@ -136,6 +139,9 @@ def extract(input):
     print(f"Audio codec: {codec}")
 
     out_file = define_output(input, follow_env=False, video_extract=True, codec=codec)
+
+    if convert_extracted and convert_format != False:
+        out_file = convert(out_file, convert_format)
 
     return out_file
 
@@ -293,12 +299,20 @@ with gr.Blocks() as convertblock:
 
 
 with gr.Blocks() as extractblock:
+
     with gr.Row():
         videofile = gr.Video(sources="upload", label="Input Video", scale=1)
         extracted_vid = gr.Audio(label="Extracted Audio", show_download_button=True, scale=2)
 
+    with gr.Column():
+
+        audio_format_check = gr.Checkbox(label="Convert extracted audio", value=0, info="Enable this option to convert audio after extraction", scale=1)
+        convert_format = gr.Radio(["wav", "flac", "mp3", "m4b", "aac", "ogg", "wma", "aiff", "webm"], label="Convert to:", scale=2)
+
     extract_btn = gr.Button("Extract Audio", variant="primary")
-    extract_btn.click(fn=extract, inputs=videofile, outputs=extracted_vid)
+    extract_btn.click(fn=extract, inputs=[videofile, audio_format_check, convert_format], outputs=extracted_vid)
+    
+   
 
 
 with gr.Blocks() as statsblock:
