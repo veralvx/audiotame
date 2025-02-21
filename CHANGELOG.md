@@ -1,3 +1,15 @@
+## 0.1.9 - 2025-02-21
+### Docs
+- Yml typo
+
+### Feat
+- Added aac codec option
+- Convert lossy to wav before filters
+- Extract audio from video
+
+### Fix
+- Webm and opus support
+
 ## 0.1.8 - 2025-02-20
 ### Chore
 - Update requirements
