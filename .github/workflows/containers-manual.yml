@@ -1,4 +1,4 @@
-name: Push to Registries
+name: Push to Registries (manual)
 
 on:
   push:

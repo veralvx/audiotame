@@ -271,7 +271,7 @@ SILENCE_FLOOR="-60"
 DEBUG=0
 ```
 
-- CONVERT_LOSSY_TO_WAV: if the input format is a lossy format, the program will convert to `.wav`;
+- `CONVERT_LOSSY_TO_WAV`: if the input format is a lossy format, the program will convert to `.wav`;
 
 - `NORM_TYPE`: Normalization type: `ebu` ou `rms`;
 
