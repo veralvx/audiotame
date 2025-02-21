@@ -1,9 +1,6 @@
 name: Push to Registries (manual)
 
 on:
-  push:
-    tags: ['*']
-    
   workflow_dispatch:
 
 
