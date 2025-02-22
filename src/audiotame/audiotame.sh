@@ -121,10 +121,14 @@ elif [[ "$2" == "convert" ]]; then
         ffconvargs=""
     fi
 
-    # wav, flac, m4a, aac, aiff, mp3, ogg, opus, , wma
-        
-    ffmpeg -i $kitten_audio $ffconvargs $audio_dir/$base_name_no_ext.$3 -y
+    # wav, flac, m4a, aac, aiff, mp3, ogg, opus, wma
 
+    if [[  "$input_extension" == "$3" ]]; then
+        echo "input_extension is equal to conversion target. Skipping..."
+    else
+        ffmpeg -i $kitten_audio $ffconvargs $audio_dir/$base_name_no_ext.$3 -y
+    fi
+        
     exit
 
 elif [[ "$2" == "extract" ]]; then
