@@ -207,7 +207,7 @@ with gr.Blocks() as envars:
 
     with gr.Row():
         NORM_TYPE = gr.Radio(["ebu", "rms"], label="Normalization Type", value="ebu")
-        LOUD_TARGET = gr.Slider(value="-21", minimum=-80, maximum=0, step=1, label="Loudness Normalization Target")
+        LOUD_TARGET = gr.Slider(value="-21", minimum=-70, maximum=-5, step=1, label="Loudness Normalization Target")
 
     with gr.Row():
         ARNNDN = gr.Checkbox(
