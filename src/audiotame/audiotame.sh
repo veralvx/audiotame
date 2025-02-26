@@ -7,9 +7,22 @@ if [ -z "$1" ];  then
 	echo "Usage: audiotame path_to_file" 
 	exit
 elif [[ $1 == "help" ]] || [[ $1 == "--help" ]] || [[ $1 == "-h" ]]; then
-    echo "Usage:"
-    echo "audiotame path_to_file [optional|pass|float|stats|acx|sr|br|convert|extract] [optional|pass|float|(int)k|file_extension]"
-    echo "path_to_file is mandatory. Other parameters are optional"
+
+    echo """Usage: audiotame {path_to_file | --gradio} [operation] [operation_arg]
+
+Flag:
+  --gradio                Start Gradio server
+
+Operations:
+  pass                    Do not alter peak level db
+  stats                   Display audio file statistics
+  acx                     Check for ACX compatibility
+  sr <sample_rate>        Change sample rate (e.g., 44100)
+  br <bitrate>            Change bitrate (e.g., 128k, 320k)
+  convert <format>        Convert to specified format (e.g., mp3, wav)
+  extract                 Extract audio from video
+"""
+
 elif [[ "$1" == "--gradio" ]]; then
     python3 $audiotame_script_dir/app.py
     exit 1
