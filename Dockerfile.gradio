@@ -12,4 +12,4 @@ ENV GRADIO_SERVER_NAME="0.0.0.0"
 ENTRYPOINT ["audiotame"]
 CMD ["--gradio"]
 
-WORKDIR /tmp
+WORKDIR /workspace
