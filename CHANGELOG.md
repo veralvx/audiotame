@@ -1,14 +1,21 @@
-## 0.1.10 - 2025-02-21
+## 0.1.11 - 2025-02-26
 ### Chore
 - Update docker workflow
 - Added manual docker workflow
+- Bump version
 
 ### Docs
 - Added backticks in variable
+- Update readme
 
 ### Fix
 - Docker workflow with right tags
 - Convert and extract resolve to right file path
+- Removed tag from docker action
+- Conversion is skipped if target is equal to input
+- Adjust normalization target limit
+- Adjust usage instructions
+- Update workdir in dockerfiles
 
 ## 0.1.9 - 2025-02-21
 ### Chore
