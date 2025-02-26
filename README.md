@@ -85,7 +85,7 @@ podman pull ghcr.io/lvxvvv/audiotame:gradio
 Then, you can run:
 
 ```
-podman run --rm -it --volume "$(pwd)":/tmp audiotame:cli
+podman run --rm -it --volume "$(pwd)":/workspace audiotame:cli
 ```
 
 ```
@@ -97,7 +97,7 @@ podman run -it -p 7860:7860 audiotame:gradio
 Use an alias in your `~/.bashrc`:
 
 ```
-alias audiotame='podman run --rm --volume $(pwd):/tmp audiotame:cli'
+alias audiotame='podman run --rm --volume $(pwd):/workspace audiotame:cli'
 ```
 
 ```
@@ -106,7 +106,7 @@ alias audiotame:gradio='podman run -it --rm -p 7860:7860 audiotame:gradio'
 
 
 ```
-echo "alias audiotame='podman run --rm --volume \$(pwd):/tmp audiotame:cli'" >> ~/.bashrc
+echo "alias audiotame='podman run --rm --volume \$(pwd):/workspace audiotame:cli'" >> ~/.bashrc
 ```
 
 ```
@@ -119,7 +119,7 @@ Then,
 source ~/.bashrc
 ```
 
-The directory from wich you run `audiotame` command will be mounted in `/tmp`, which is also the working directory. So, a file named `audio.wav` in your current directory can be passed to the program with:
+The directory from wich you run `audiotame` command will be mounted in `/workspace`, which is also the working directory. So, a file named `audio.wav` in your current directory can be passed to the program with:
 
 ```
 audiotame audio.wav
@@ -131,11 +131,23 @@ audiotame audio.wav
 
 #### Tame Audio
 
+
 ```
-audiotame path_to_file [optional|pass|float|stats|acx|sr|br|convert|extract] [optional|pass|float|(int)k|file_extension]
+Usage: audiotame {path_to_file | --gradio} [operation] [operation_arg]
+
+Flag:
+  --gradio                Start Gradio server
+
+Operations:
+  pass                    Do not alter peak level db
+  stats                   Display audio file statistics
+  acx                     Check for ACX compatibility
+  sr <sample_rate>        Change sample rate (e.g., 44100)
+  br <bitrate>            Change bitrate (e.g., 128k, 320k)
+  convert <format>        Convert to specified format (e.g., mp3, wav)
+  extract                 Extract audio from video
 ```
 
-`path_to_file` is mandatory. Other parameters are optional.
 
 Example:
 
