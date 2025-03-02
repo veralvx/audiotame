@@ -1,15 +1,3 @@
----
-title: AudioTame
-sdk: docker
-app_port: 7860
-pinned: true
-colorFrom: purple
-colorTo: red
-language: en
-license: "mit"
-tags: ["audio", "normalization", "noise reduction", "normalize audio", "acx", "audio conversion"]
----
-
 # AudioTame
 
 A command-line tool that normalizes audio and reduces noise. This tool aims to effortless create an audio file that is high in quality. It targets an integrated loudness (LUFS, RMS) close to 20, by default. It uses [ffmpeg-normalize](https://github.com/slhck/ffmpeg-normalize) and additional ffmpeg filters to achieve the desired result, as well as SoX and mp3gain.
@@ -18,7 +6,7 @@ Audiotame has an [ACX Check](#acx-check). Notice, however, that while meeting th
 
 Also, it uses Bash, so it is not expected to work on Windows systems, unless used under WSL or containers.
 
-A live demo is running on [HuggingFace](https://huggingface.co/spaces/lvxvvv/audiotame)
+A live demo is running on [HuggingFace](https://huggingface.co/spaces/veralvx/audiotame)
 
 **Contents**
 
@@ -67,7 +55,7 @@ Notice: even installing the `pip` package, you still need to install system pack
 #### Build the Image from Source
 
 ```
-git clone --recurse-submodules https://github.com/lvxvvv/audiotame.git audiotame
+git clone --recurse-submodules https://github.com/veralvx/audiotame.git audiotame
 cd audiotame
 podman build . -t audiotame
 ```
@@ -75,11 +63,11 @@ podman build . -t audiotame
 #### Pull the Image
 
 ```
-podman pull ghcr.io/lvxvvv/audiotame:cli
+podman pull ghcr.io/veralvx/audiotame:cli
 ```
 
 ```
-podman pull ghcr.io/lvxvvv/audiotame:gradio
+podman pull ghcr.io/veralvx/audiotame:gradio
 ```
 
 Then, you can run:

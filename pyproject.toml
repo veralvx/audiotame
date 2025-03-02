@@ -15,13 +15,13 @@ audiotame = "audiotame.main:main"
 
 [project]
 name = "audiotame"
-version = "0.1.11"
+version = "0.1.12"
 #dynamic = ["version"]
 authors = [
-  { name="lvxvvv" },
+  { name="veralvx" },
 ]
 maintainers = [
-  {name = "lvxvvv"}
+  {name = "veralvx"}
 ]
 description = "Command-line tool that normalizes audio and reduces noise."
 readme = "README.md"
@@ -60,12 +60,12 @@ dependencies = [
 license = { file = "LICEN[CS]E*" }
 
 [project.urls]
-Homepage = "https://github.com/lvxvvv/audiotame"
-Repository = "https://github.com/lvxvvv/audiotame.git"
-Issues = "https://github.com/lvxvvv/audiotame/issues"
-Mastodon = "https://mastodon.social/@lvxvvv"
-Twitter = "https://x.com/LVXVVV"
-Changelog = "https://github.com/lvxvvv/audiotame/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/veralvx/audiotame"
+Repository = "https://github.com/veralvx/audiotame.git"
+Issues = "https://github.com/veralvx/audiotame/issues"
+Mastodon = "https://mastodon.social/@veralvx"
+Twitter = "https://x.com/veralvx"
+Changelog = "https://github.com/veralvx/audiotame/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 gui = ["gradio>=5.0,<6.0; python_version >= '3.10'"]
