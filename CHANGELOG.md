@@ -1,7 +1,15 @@
+## 0.1.12 - 2025-03-02
+### Chore
+- Update username
+
+### Docs
+- Update changelog
+
 ## 0.1.11 - 2025-02-26
 ### Chore
 - Update docker workflow
 - Added manual docker workflow
+- Bump to 0.1.10
 - Bump version
 
 ### Docs
