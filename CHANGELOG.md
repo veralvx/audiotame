@@ -1,6 +1,14 @@
+## 0.1.13 - 2025-03-09
+### Chore
+- Update license
+
+### Feat
+- Add libafdk_aac support; true peak support
+
 ## 0.1.12 - 2025-03-02
 ### Chore
 - Update username
+- Bump version
 
 ### Docs
 - Update changelog
