@@ -1,5 +1,28 @@
 #!/bin/bash
 
+
+# TODO
+# ffmpeg -i output6.wav -af "highpass=f=80, lowpass=f=10000" outputter2.wav
+# regular denoise with lopass and highpass
+# generate noise profile for sox
+
+
+
+#sox "$INPUT" "low_noise.wav" lowpass "$LOW_THRESHOLD"
+#sox "low_noise.wav" -n noiseprof "low.prof"
+#sox "$INPUT" "high_noise.wav" highpass "$HIGH_THRESHOLD
+#sox "high_noise.wav" -n noiseprof "high.prof"
+#sox "$INPUT" "temp.wav" noisered "low.prof" 0.21
+#sox "temp.wav" "$OUTPUT" noisered "high.prof" 0.21
+#rm "low_noise.wav" "high_noise.wav" "low.prof" "high.prof" "temp.wav"
+
+#ffmpeg -i input.wav -af "treble=g=-6:f=10000" output.wav
+#ffmpeg -i input.wav -af "bass=g=-6:f=100" output.wav
+
+# Frequency Tweak
+# Dividir em: sox_db_denoise, sox_frequency_denoise, regular_db_denoise, regular_frequency_denoise, highpass/lowpass (cut entirely)
+
+
 audiotame_script_dir=$(dirname $(realpath $0))
 
 if [ -z "$1" ];  then
@@ -46,6 +69,7 @@ if [[ $GRADIO_RUNNING -ne 1 ]]; then
     CONVERT_LOSSY_TO_WAV=1
     DB_PEAK_BEFORE_ALL="-100"
     DB_PEAK_AFTER_NORM="-100"
+    TRUE_PEAK="-3"
     NORM_TYPE="ebu"
     LOUD_TARGET="-21"
     ARNNDN=0
@@ -105,6 +129,17 @@ Bit Rate: $bit_rate
 }
 
 
+if [[ $(ffmpeg -encoders | grep libfdk_aac) ]]; then     
+    aac_encoder="libfdk_aac"
+    aac_options="-cutoff 20000 -afterburner 1 -vbr 5"
+    echo "here in grep"
+else     
+    aac_encoder="aac"
+    aac_options="-b:a 320k"
+fi 
+
+
+
 if [[ "$2" == "acx" ]]; then
 
     stats $kitten_audio
@@ -123,13 +158,17 @@ elif [[ "$2" == "convert" ]]; then
         echo "output format not specified."
         echo "usage: audiotame path_to_audio convert output_format"
         echo "example: audiotame audio.wav convert mp3"
-        exit
+  
     elif [[ "$3" == "mp3" ]]; then
         ffconvargs="-qscale:a 0"
     elif [[ "$3" == "ogg" ]]; then
         ffconvargs="-qscale:a 10"
     elif [[ "$3" == "flac" ]]; then
         ffconvargs="-compression_level 12"
+    elif [[ "$3" == "aac" ]]; then
+
+    	ffconvargs="-c:a $aac_encoder $aac_options" 
+
     else
         ffconvargs=""
     fi
@@ -157,6 +196,24 @@ elif [[ "$2" == "extract" ]]; then
     exit
 
 fi
+
+
+codec_option=-c:a
+if [[ $input_extension == "ogg" ]]; then
+    codec_lib=libvorbis
+elif [[ $input_extension == "flac" ]]; then
+    codec_lib=flac
+elif [[ $input_extension == "m4a" ]]; then
+    codec_lib=aac
+elif [[ $input_extension == "opus" ]] || [[ $input_extension == "webm" ]]; then
+    codec_lib=libopus
+elif [[ $input_extension == "aac" ]]; then
+    codec_lib="$aac_encoder"
+else
+    codec_option=""
+    codec_lib=""
+fi
+
 
 
 if [[ $CONVERT_LOSSY_TO_WAV -eq 1 ]]; then
@@ -245,21 +302,6 @@ SILENCE_FLOOR=$SILENCE_FLOOR
 DEBUG=$DEBUG
 """
 
-codec_option=-c:a
-if [[ $input_extension == "ogg" ]]; then
-    codec_lib=libvorbis
-elif [[ $input_extension == "flac" ]]; then
-    codec_lib=flac
-elif [[ $input_extension == "m4a" ]]; then
-    codec_lib=aac
-elif [[ $input_extension == "opus" ]] || [[ $input_extension == "webm" ]]; then
-    codec_lib=libopus
-elif [[ $input_extension == "aac" ]]; then
-    codec_lib=aac
-else
-    codec_option=""
-    codec_lib=""
-fi
 
 
 db_tweak(){
@@ -461,7 +503,7 @@ else
     # ffmpeg-normalize sometimes re-samples to 192khz
     echo "Loudness target: $LOUD_TARGET"
     echo "Normalization type: $NORM_TYPE"
-    ffmpeg-normalize -f "$kitten_prenorm" -nt "$NORM_TYPE" -t "$LOUD_TARGET" -o "$audio_dir/.$base_name_no_ext-normalized.$input_extension" $codec_option $codec_lib
+    ffmpeg-normalize -f "$kitten_prenorm" -nt "$NORM_TYPE" -t "$LOUD_TARGET" $codec_option $codec_lib  --true-peak $TRUE_PEAK -o "$audio_dir/.$base_name_no_ext-normalized.$input_extension" 
 
 fi
 
