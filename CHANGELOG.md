@@ -1,6 +1,11 @@
+## 0.1.14 - 2025-03-14
+### Fix
+- Optional enable true peak
+
 ## 0.1.13 - 2025-03-09
 ### Chore
 - Update license
+- Bump version
 
 ### Feat
 - Add libafdk_aac support; true peak support
