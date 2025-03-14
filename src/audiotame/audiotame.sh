@@ -69,6 +69,7 @@ if [[ $GRADIO_RUNNING -ne 1 ]]; then
     CONVERT_LOSSY_TO_WAV=1
     DB_PEAK_BEFORE_ALL="-100"
     DB_PEAK_AFTER_NORM="-100"
+    ENABLE_TRUE_PEAK=0
     TRUE_PEAK="-3"
     NORM_TYPE="ebu"
     LOUD_TARGET="-21"
@@ -503,7 +504,12 @@ else
     # ffmpeg-normalize sometimes re-samples to 192khz
     echo "Loudness target: $LOUD_TARGET"
     echo "Normalization type: $NORM_TYPE"
-    ffmpeg-normalize -f "$kitten_prenorm" -nt "$NORM_TYPE" -t "$LOUD_TARGET" $codec_option $codec_lib  --true-peak $TRUE_PEAK -o "$audio_dir/.$base_name_no_ext-normalized.$input_extension" 
+    
+    if [[ $ENABLE_TRUE_PEAK -eq 1 ]]; then
+    	true_peak_cmd="--true-peak $TRUE_PEAK"
+    fi
+    
+    ffmpeg-normalize -f "$kitten_prenorm" -nt "$NORM_TYPE" -t "$LOUD_TARGET" $codec_option $codec_lib $true_peak_cmd -o "$audio_dir/.$base_name_no_ext-normalized.$input_extension" 
 
 fi
 
