@@ -19,3 +19,4 @@ flagged/
 Dockerfile.package
 audiotame.env
 silence.sh
+**egg-info

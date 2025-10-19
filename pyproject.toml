@@ -8,54 +8,50 @@ include-package-data = true
 [tool.setuptools.package-data]
 "audiotame" = ["audiotame.sh", "arnndn-models/*"]
 
-
 [project.scripts]
 audiotame = "audiotame.main:main"
-
 
 [project]
 name = "audiotame"
 version = "0.1.14"
 #dynamic = ["version"]
-authors = [
-  { name="veralvx" },
-]
-maintainers = [
-  {name = "veralvx"}
-]
+authors = [{ name = "veralvx" }]
+maintainers = [{ name = "veralvx" }]
 description = "Command-line tool that normalizes audio and reduces noise."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Programming Language :: Python",
-    "Programming Language :: Unix Shell",
-    "Environment :: Console",
-    "Operating System :: Unix",
-    "Operating System :: POSIX :: Linux",
-    "Intended Audience :: Developers",
-    "Intended Audience :: End Users/Desktop",
-    "Topic :: Multimedia :: Sound/Audio",
-    "Topic :: Multimedia :: Sound/Audio :: Analysis",
-    "Topic :: Multimedia :: Sound/Audio :: Conversion",
-    "License :: OSI Approved :: MIT License",
-    "Natural Language :: English"
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python",
+  "Programming Language :: Unix Shell",
+  "Environment :: Console",
+  "Operating System :: Unix",
+  "Operating System :: POSIX :: Linux",
+  "Intended Audience :: Developers",
+  "Intended Audience :: End Users/Desktop",
+  "Topic :: Multimedia :: Sound/Audio",
+  "Topic :: Multimedia :: Sound/Audio :: Analysis",
+  "Topic :: Multimedia :: Sound/Audio :: Conversion",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English"
 ]
 
-
-keywords = ["audio", "normalization", "noise reduction", "normalize audio", "acx", "audio conversion"]
-
-dependencies = [
-  "ffmpeg-normalize>=1.31.0,<2.0"
+keywords = [
+  "audio",
+  "normalization",
+  "noise reduction",
+  "normalize audio",
+  "acx",
+  "audio conversion"
 ]
 
+dependencies = ["ffmpeg-normalize>=1.31.0,<2.0"]
 
 license = { file = "LICEN[CS]E*" }
 

@@ -72,16 +72,32 @@ if [[ $GRADIO_RUNNING -ne 1 ]]; then
     ENABLE_TRUE_PEAK=0
     TRUE_PEAK="-3"
     NORM_TYPE="ebu"
-    LOUD_TARGET="-21"
-    ARNNDN=0
+    LOUD_TARGET="-16"
+    HIGHPASS_FREQUENCY=80
+    GATE=1
+    GATE_THRESHOLD=0.01 # -40db
+    GATE_ATTACK=10
+    GATE_RELEASE=150
+    ACOMPRESSOR=1
+    ACOMPRESSOR_THRESHOLD=0.1778 # -15db
+    ACOMPRESSOR_RATIO=3
+    ACOMPRESSOR_ATTACK=10
+    ACOMPRESSOR_RELEASE=150
+    LIMITER=0
+    HIGHPASS=1
+    DE_ESSER=1
+    ARNNDN=1
     ARNNDN_MODEL="cb.rnnn"
+    ANLMDN=1
+    ANLMDN_STRENGTH=0.01
+    ANLMDN_RADIUS=0.300
     SOX_DENOISE=1
     SOX_FACTOR=0.21
     SOX_NOISE_THRESHOLD="-50"
     SOX_NOISE_MIN_DURATION=0.5
     REGULAR_DENOISE=1
     REGULAR_NOISE_THRESHOLD="-50"
-    SILENCE_FLOOR="-60"
+    SILENCE_FLOOR="-50"
     DEBUG=0
 
 
@@ -439,6 +455,28 @@ else
 fi
 
 
+
+if [[ $ANLMDN -eq 1 ]]; then
+    echo "Applying ANLMDN filter with padding and trimming..."
+
+    INPUT_DURATION=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$kitten_sox")
+    if [[ -z "$INPUT_DURATION" ]]; then
+        echo "Error: Could not determine duration of input file: $kitten_sox"
+        exit 1
+    fi
+
+    ANLMDN_RADIUS_S=$(python -c "print($ANLMDN_RADIUS)")
+    ffmpeg -i "$kitten_sox" -af "adelay=${ANLMDN_RADIUS}:all=1,apad=pad_dur=${ANLMDN_RADIUS_S},anlmdn=s=${ANLMDN_STRENGTH}:r=${ANLMDN_RADIUS},atrim=start=${ANLMDN_RADIUS_S}:duration=${INPUT_DURATION},asetpts=PTS-STARTPTS" "$audio_dir/.$base_name_no_ext-anlmdn.$input_extension"
+
+    if [[ -f "$audio_dir/.$base_name_no_ext-anlmdn.$input_extension" ]]; then
+        # The output file should now have the correct, non-truncated length.
+        kitten_sox="$audio_dir/.$base_name_no_ext-anlmdn.$input_extension"
+        echo "$kitten_sox created successfully and has the correct length."
+    else
+        echo "Error: ffmpeg command failed to create the output file."
+    fi
+fi
+
 if [[ $REGULAR_DENOISE -eq 1 ]]; then
     # everything below 50db gets reduced in 10db
     ffmpeg -i $kitten_sox -af "afftdn=nr=10:nf=$REGULAR_NOISE_THRESHOLD" $audio_dir/.$base_name_no_ext-afftdn.$input_extension -y
@@ -497,6 +535,43 @@ if [[ $DEBUG -eq 1 ]]; then
 fi
 
 
+if [[ $HIGHPASS -eq 1 ]]; then
+    ffmpeg -i $kitten_prenorm -af "volume=-0.1dB,highpass=f=$HIGHPASS_FREQUENCY"  "$audio_dir/.$base_name_no_ext-highpass.$input_extension" -y
+    if [[ -f "$audio_dir/.$base_name_no_ext-highpass.$input_extension" ]]; then
+        kitten_prenorm="$audio_dir/.$base_name_no_ext-highpass.$input_extension"
+        echo "$kitten_prenorm created"
+    fi
+fi
+
+
+if [[ $GATE -eq 1 ]]; then  
+    ffmpeg -i $kitten_prenorm -af "agate=threshold=$GATE_THRESHOLD:range=1e-5:attack=$GATE_ATTACK:release=$GATE_RELEASE" "$audio_dir/.$base_name_no_ext-gated.$input_extension" -y
+    if [[ -f "$audio_dir/.$base_name_no_ext-gated.$input_extension" ]]; then
+        kitten_prenorm="$audio_dir/.$base_name_no_ext-gated.$input_extension"
+        echo "$kitten_prenorm created"
+    fi
+fi
+
+
+if [[ $ACOMPRESSOR -eq 1 ]]; then
+    ffmpeg -i $kitten_prenorm -af "acompressor=threshold=$ACOMPRESSOR_THRESHOLD:ratio=$ACOMPRESSOR_RATIO:attack=$ACOMPRESSOR_ATTACK:release=$ACOMPRESSOR_RELEASE:makeup=1" "$audio_dir/.$base_name_no_ext-compressed.$input_extension" -y
+    if [[ -f "$audio_dir/.$base_name_no_ext-compressed.$input_extension" ]]; then
+        kitten_prenorm="$audio_dir/.$base_name_no_ext-compressed.$input_extension"
+        echo "$kitten_prenorm created"
+    fi
+fi
+
+if [[ $DE_ESSER -eq 1 ]]; then
+    ffmpeg -i $kitten_prenorm -af "deesser=i=0.5:f=0.5:m=0.5" "$audio_dir/.$base_name_no_ext-deessed.$input_extension" -y
+    if [[ -f "$audio_dir/.$base_name_no_ext-deessed.$input_extension" ]]; then
+        kitten_prenorm="$audio_dir/.$base_name_no_ext-deessed.$input_extension"
+        echo "$kitten_prenorm created"
+    fi
+fi
+
+
+
+
 if [[ $input_extension == "mp3" ]]; then
     cp "$kitten_prenorm" $audio_dir/.$base_name_no_ext-normalized.$input_extension
     mp3gain -r -c $audio_dir/.$base_name_no_ext-normalized.$input_extension
@@ -520,6 +595,16 @@ if [[  -f "$audio_dir/.$base_name_no_ext-normalized.$input_extension" ]]; then
 else
     kitten_norm=$kitten_prenorm
 fi
+
+if [[ $LIMITER -eq 1 ]]; then
+    ffmpeg -i $kitten_norm -af "alimiter=limit=0.8413:level=disabled:attack=5:release=50" "$audio_dir/.$base_name_no_ext-limited.$input_extension" 
+    if [[ -f "$audio_dir/.$base_name_no_ext-limited.$input_extension" ]]; then
+        kitten_norm="$audio_dir/.$base_name_no_ext-limited.$input_extension"
+        echo "$kitten_norm created"
+    fi
+fi
+
+
 
 
 if [[ $DEBUG -eq 1 ]]; then
