@@ -1,3 +1,8 @@
+## 0.1.16 - 2025-10-19
+### <!-- 7 -->⚙️ Miscellaneous Tasks
+- Update changelog
+- Update pyproject
+
 ## 0.1.14 - 2025-03-14
 ### <!-- 1 -->🐛 Bug Fixes
 - Optional enable true peak
