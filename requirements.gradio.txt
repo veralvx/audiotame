@@ -8,7 +8,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 colorlog==6.9.0
 fastapi==0.115.8
-ffmpeg-normalize==1.33.4
+ffmpeg-normalize==1.34.0
 ffmpeg-progress-yield==0.11.3
 ffmpy==0.5.0
 filelock==3.17.0
